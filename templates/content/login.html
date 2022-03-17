@@ -1,0 +1,19 @@
+{{define "content"}}
+
+<div id="login-box" class="container">
+    <form action="/login" method="post" class="row g-1">
+        <div class="row">
+            <label for="username">Username</label>
+            <input type="text" id="username" name="username" class="form-control form-control-sm" value="{{.Username}}"/>
+        </div>
+        <div class="row">
+            <label for="pwd">Password</label>
+            <input type="password" id="password" name="password" class="form-control form-control-sm" value="{{.Password}}"/>
+        </div>
+        <div class="row-2 g-1">
+            <input class="btn btn-primary" type="submit" value="Login"/>
+        </div>
+    </form>
+</div>
+
+{{end}}

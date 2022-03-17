@@ -1,0 +1,69 @@
+body {
+    max-width: 100%;
+    padding: 3px;
+    font-size: 100%;
+}
+
+.container {
+    padding: 10px;
+}
+
+p {
+    font-family: sans-serif;
+}
+
+/*nav bar*/
+nav {
+    background-color: rgb(239, 241, 245);
+    padding: 15px 3px 5px;
+    text-align: right;
+}
+
+/*timer*/
+#stopwatch {
+    padding: 10px;
+}
+
+#timer {
+    background-color: #E6EEF0;
+    max-width: 70%;
+    margin: auto;
+    border-radius: 5px;
+}
+p.clock {
+    text-align: center;
+    font-size: 2.5em;
+}
+
+.buttons {
+    max-width: 70%;
+    margin: auto;
+    text-align: center;
+}
+
+/*records*/
+.records {
+    font-size: 0.9em;
+}
+
+#record-form {
+    font-size: 0.8em;
+}
+
+.records-nav {
+    float: right;
+    padding-top: 2%;
+}
+
+.recent {
+    padding: 5px 8px 3px;
+    /* background-color: #F2F6F7;     */
+}
+
+#nav-buttons {
+    display: inline-block;
+}
+
+.btn-primary {
+    background-color: #2D3047 !important
+}
