@@ -6,6 +6,7 @@ import (
 	"log"
 	"net/http"
 
+	"github.com/pluralsight/webservice/model"
 	"github.com/pluralsight/webservice/viewmodel"
 )
 
@@ -41,10 +42,12 @@ func (h home) handleLogin(w http.ResponseWriter, r *http.Request) {
 		}
 		username := r.Form.Get("username")
 		password := r.Form.Get("password")
-		if username == "quinn" && password == "password1" {
+		if user, err := model.Login(username, password); err == nil {
+			log.Printf("user logged in: %v\n", user)
 			http.Redirect(w, r, "/home", http.StatusTemporaryRedirect)
 			return
 		} else {
+			log.Printf("failed to log user with username:%v\n error: %v\n", username, err)
 			vm.Username = username
 			vm.Password = password
 		}

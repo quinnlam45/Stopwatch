@@ -9,7 +9,6 @@ import (
 	"os"
 
 	"github.com/pluralsight/webservice/controller"
-	"github.com/pluralsight/webservice/middleware"
 	"github.com/pluralsight/webservice/model"
 
 	"database/sql"
@@ -22,12 +21,18 @@ func main() {
 	db := connectToDatabase()
 	defer db.Close()
 	controller.Startup(templates)
-	http.ListenAndServe(":8000", new(middleware.TimeoutMiddleware))
+	http.ListenAndServe(":8000", nil) //new(middleware.TimeoutMiddleware)
 }
 
 func connectToDatabase() *sql.DB {
-	connString := "sqlserver://quinn@localhost/DESKTOP-TC8EDHO\\SQLEXPRESS?database=Stopwatch&connection+timeout=30"
-
+	//var server = "DESKTOP-TC8EDHO\\SQLEXPRESS"
+	// var port = 1433
+	// var user = "quinn"
+	// var database = "Stopwatch"
+	//connString := `sqlserver://quinn@DESKTOP-TC8EDHO\SQLEXPRESS/SQLEXPRESS?database=Stopwatch&connection+timeout=40`
+	connString := "odbc:server=DESKTOP-TC8EDHO\\SQLEXPRESS;user id=quinn;database=Stopwatch"
+	// connString := fmt.Sprintf("server=%s;user id=%s;port=%d;database=%s;",
+	// 	server, user, port, database)
 	connector, err := mssql.NewConnector(connString)
 	if err != nil {
 		log.Fatalln(fmt.Errorf("unable to connect to database: %v", err))
