@@ -35,3 +35,8 @@ func NewRecords() Records {
 
 	return results
 }
+
+// func NewRecords() []*model.Record {
+// 	record, _ := model.GetRecords()
+// 	return record
+// }
