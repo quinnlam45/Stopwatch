@@ -20,6 +20,11 @@ func main() {
 	templates := populateTemplates()
 	db := connectToDatabase()
 	defer db.Close()
+	// results, err := model.GetRecords()
+	// if err != nil {
+	// 	fmt.Printf("Result error: %v", err)
+	// }
+	// fmt.Printf("Results: %v", results)
 	controller.Startup(templates)
 	http.ListenAndServe(":8000", nil) //new(middleware.TimeoutMiddleware)
 }
@@ -30,7 +35,7 @@ func connectToDatabase() *sql.DB {
 	// var user = "quinn"
 	// var database = "Stopwatch"
 	//connString := `sqlserver://quinn@DESKTOP-TC8EDHO\SQLEXPRESS/SQLEXPRESS?database=Stopwatch&connection+timeout=40`
-	connString := "odbc:server=DESKTOP-TC8EDHO\\SQLEXPRESS;user id=quinn;database=Stopwatch"
+	connString := "odbc:server=DESKTOP-TC8EDHO\\SQLEXPRESS;user id=stopwatch_sa;password=stopwatch;database=Stopwatch"
 	// connString := fmt.Sprintf("server=%s;user id=%s;port=%d;database=%s;",
 	// 	server, user, port, database)
 	connector, err := mssql.NewConnector(connString)

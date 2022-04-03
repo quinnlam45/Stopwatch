@@ -63,12 +63,14 @@
 							<td>4.0km</td>
 							<td>Running</td>
 						</tr>
+						{{range .RecordList}}
 						<tr>
 							<td>{{.Date}}</td>
 							<td>{{.Time}}</td>
 							<td>{{.Distance}}</td>
 							<td>{{.By}}</td>
 						</tr>
+						{{end}}
 
 					</tbody>
 				</table>

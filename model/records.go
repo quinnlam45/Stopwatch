@@ -12,12 +12,33 @@ type Record struct {
 	By       string
 }
 
-func GetRecords() (*Record, error) {
+func GetRecord() (*Record, error) {
 	record_result := &Record{}
-	row := db.QueryRow(`EXEC spGetRecords 1`)
+	row := db.QueryRow(`EXEC spGetRecord 1`)
 	if err := row.Scan(&record_result.Date, &record_result.Time, &record_result.Distance, &record_result.By); err != nil {
+		fmt.Println(err)
 		return nil, err
 	}
 	fmt.Println(record_result)
 	return record_result, nil
+}
+
+func GetAllRecords() ([]*Record, error) {
+	rows, err := db.Query(`EXEC spGetAllRecords`)
+	if err != nil {
+		fmt.Println(err)
+		return nil, err
+	}
+	records := []*Record{}
+	for rows.Next() {
+		record_result := &Record{}
+		err := rows.Scan(&record_result.Date, &record_result.Time, &record_result.Distance, &record_result.By)
+		if err != nil {
+			fmt.Println(err)
+			return nil, err
+		}
+		// fmt.Println(record_result)
+		records = append(records, record_result)
+	}
+	return records, nil
 }

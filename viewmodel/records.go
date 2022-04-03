@@ -22,9 +22,11 @@ func NewRecords() Records {
 		Title:  "Records",
 		Active: "records",
 	}
-	record1, _ := model.GetRecords()
-	results.RecordList = append(results.RecordList, record1)
-	//results.RecordList = []Record{record1}
+	results.RecordList, _ = model.GetAllRecords()
+	// for _, record := range records {
+	// 	results.RecordList = append(results.RecordList, record)
+	// }
+
 	return results
 }
 
