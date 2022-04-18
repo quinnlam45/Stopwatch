@@ -4,7 +4,9 @@
 				<div id="timer" name="timer"><p class="clock">00:00:00.00</p></div>
 				<div id="buttons" name="buttons" class="buttons">
 					<input id="start-button" class="btn btn-primary" type="button" onclick="start()" value="Start">
-					<input id="stop-button" class="btn btn-primary" type="button" onclick="stopTimer()" value="Stop">
+					<input id="continue-button" class="btn btn-primary" type="button" style="display: none" onclick="continueTimer()" value="Continue">
+					<input id="pause-button" class="btn btn-primary" type="button" style="display: none" onclick="pause()" value="Pause">
+					<input id="stop-button" class="btn btn-primary" type="button" onclick="stop()" value="Stop">
 					<input id="reset-button" class="btn btn-primary" type="button" style="display: none" onclick="reset()" value="Reset">
 				</div> 
 			</div>
@@ -63,22 +65,25 @@
 
 			return hrPad + ":" + minPad + ":" + secPad + "." + milliSecPad
 		}
+
 		var dispElapsed
+		var msElapsed
 
 		function startTimer(startTime) {
-			let elapsed = Date.now() - startTime;
-			dispElapsed = displayTime(elapsed);
+			msElapsed = Date.now() - startTime;
+			dispElapsed = displayTime(msElapsed);
 			document.querySelector('.clock').textContent = dispElapsed;
 		}		
 		
-		function start() {
-			let startTime = Date.now();
+		function start(msElapsed = 0) {
+			startTime = Date.now() - msElapsed
 			createClock = setInterval(startTimer, 10, startTime);
 			document.querySelector('#reset-button').style.display = "inline";
-			document.querySelector('#start-button').className = "btn btn-primary disabled";
+			document.querySelector('#pause-button').style.display = "inline";
+			document.querySelector('#start-button').style.display = "none";
 		}
 
-		function stopTimer() {
+		function stop() {
 			clearInterval(createClock);
 			document.querySelector('#record-form').style.display = "inline";
 			let formTime = document.querySelector("input[id='ticker-time']")
@@ -86,9 +91,26 @@
 		}
 		
 		function reset() {
-			document.querySelector('#start-button').className = "btn btn-primary";
+			msElapsed = 0
+			document.querySelector('#start-button').style.display = "inline";
+			document.querySelector('#pause-button').style.display = "none";
+			document.querySelector('#continue-button').style.display = "none";
 			document.querySelector('.clock').textContent = "00:00:00.00";
 			document.querySelector('#record-form').style.display = "none";
+		}
+
+		function pause() {
+			stop();
+			//console.log(msElapsed);
+			document.querySelector('#continue-button').style.display = "inline";
+			document.querySelector('#pause-button').style.display = "none";
+		}
+
+		function continueTimer() {
+			start(msElapsed);
+			document.querySelector('#continue-button').style.display = "none";
+			document.querySelector('#record-form').style.display = "none";
+
 		}
 
 		// set current date on form
