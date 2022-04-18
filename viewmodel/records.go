@@ -7,30 +7,33 @@ import (
 type Records struct {
 	Title      string
 	Active     string
-	RecordList []*model.Record
+	RecordList []*Record
 }
 
-// type Record struct {
-// 	Date     *time.Time
-// 	Time     *time.Time
-// 	Distance string
-// 	By       string
-// }
+type Record struct {
+	Date         string
+	Time         string
+	Distance     float32
+	DistanceUnit string
+	By           string
+}
 
 func NewRecords() Records {
 	results := Records{
 		Title:  "Records",
 		Active: "records",
 	}
-	results.RecordList, _ = model.GetAllRecords()
-	// for _, record := range records {
-	// 	results.RecordList = append(results.RecordList, record)
-	// }
+	records, _ := model.GetAllRecords()
+
+	for _, record := range records {
+		display_record := &Record{}
+		display_record.Date = record.Date.Format("02 Jan 2006")
+		display_record.Time = record.Time.Format("15:04:05")
+		display_record.Distance = record.Distance
+		display_record.DistanceUnit = record.DistanceUnit
+		display_record.By = record.By
+		results.RecordList = append(results.RecordList, display_record)
+	}
 
 	return results
 }
-
-// func NewRecords() []*model.Record {
-// 	record, _ := model.GetRecords()
-// 	return record
-// }

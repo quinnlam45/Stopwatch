@@ -39,12 +39,13 @@
 					<thead>
 						<tr>
 							<th>Date</th>
-							<th>Time</th>
+							<th>Time completed</th>
 							<th>Distance</th>
 							<th>By</th>
 						</tr>
 					</thead>
 					<tbody>
+						<!--
 						<tr>
 							<td>31/1/22</td>
 							<td>15:20.12</td>
@@ -62,12 +63,12 @@
 							<td>45:20.04</td>
 							<td>4.0km</td>
 							<td>Running</td>
-						</tr>
+						</tr>-->
 						{{range .RecordList}}
 						<tr>
 							<td>{{.Date}}</td>
 							<td>{{.Time}}</td>
-							<td>{{.Distance}}</td>
+							<td>{{.Distance}} {{.DistanceUnit}}</td>
 							<td>{{.By}}</td>
 						</tr>
 						{{end}}

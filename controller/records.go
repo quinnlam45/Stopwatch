@@ -19,11 +19,3 @@ func (rec records) handleRecords(w http.ResponseWriter, r *http.Request) {
 	vm := viewmodel.NewRecords()
 	rec.recordsTemplate.Execute(w, vm)
 }
-
-// func (rec records) handleRecords(w http.ResponseWriter, r *http.Request) {
-// 	vm, err := model.GetRecords()
-// 	if err != nil {
-// 		fmt.Println(err)
-// 	}
-// 	rec.recordsTemplate.Execute(w, vm)
-// }

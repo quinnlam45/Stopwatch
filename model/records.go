@@ -6,10 +6,11 @@ import (
 )
 
 type Record struct {
-	Date     *time.Time
-	Time     *time.Time
-	Distance string
-	By       string
+	Date         *time.Time
+	Time         *time.Time
+	Distance     float32
+	DistanceUnit string
+	By           string
 }
 
 func GetRecord() (*Record, error) {
@@ -19,7 +20,7 @@ func GetRecord() (*Record, error) {
 		fmt.Println(err)
 		return nil, err
 	}
-	fmt.Println(record_result)
+	//fmt.Println(record_result)
 	return record_result, nil
 }
 
@@ -29,15 +30,15 @@ func GetAllRecords() ([]*Record, error) {
 		fmt.Println(err)
 		return nil, err
 	}
+	defer rows.Close()
 	records := []*Record{}
 	for rows.Next() {
 		record_result := &Record{}
-		err := rows.Scan(&record_result.Date, &record_result.Time, &record_result.Distance, &record_result.By)
+		err := rows.Scan(&record_result.Date, &record_result.Time, &record_result.Distance, &record_result.DistanceUnit, &record_result.By)
 		if err != nil {
 			fmt.Println(err)
 			return nil, err
 		}
-		// fmt.Println(record_result)
 		records = append(records, record_result)
 	}
 	return records, nil
