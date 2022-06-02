@@ -11,7 +11,7 @@
 				</div> 
 			</div>
 			<div id="record-form" class="container" style="display: none">
-				<form method="post" class="row g-1 align-items-end">
+				<form method="post" action="/" class="row g-1 align-items-end">
 						<input type="hidden" id="ticker-time" name="ticker-time" value="">
 						<div class="col">
 							<label for="form-date">Date</label>
@@ -19,18 +19,18 @@
 						</div>
 						<div class="col-2">
 							<label for="distance">Distance</label>
-							<input type="text" id="distance" name="distance" class="form-control form-control-sm"/>
+							<input type="number" min="0" step="0.1" id="distance" name="distance" class="form-control form-control-sm"/>
 						</div>
 						<div class="col">
 							<select id="distance-unit" name="distance-unit" class="form-select form-select-sm">
-								<option value="Mi" selected>Miles</option>
-								<option value="Km">Km</option>
+								<option value=1 selected>Miles</option>
+								<option value=2>Km</option>
 							</select>
 						</div>
 						<div class="col">
-							<select id="completed-by" class="form-select form-select-sm">
-								<option value="Bike" selected>Bike</option>
-								<option value="Running">Running</option>
+							<select id="completed-by" name="completed-by" class="form-select form-select-sm">
+								<option value=1 selected>Bike</option>
+								<option value=2>Running</option>
 							</select>
 						</div>
 						<div class="col">
@@ -85,9 +85,10 @@
 
 		function stop() {
 			clearInterval(createClock);
+			setFormDate();
 			document.querySelector('#record-form').style.display = "inline";
-			let formTime = document.querySelector("input[id='ticker-time']")
-			formTime.value = dispElapsed
+			let formTime = document.querySelector("input[id='ticker-time']");
+			formTime.value = dispElapsed;
 		}
 		
 		function reset() {
@@ -110,13 +111,14 @@
 			start(msElapsed);
 			document.querySelector('#continue-button').style.display = "none";
 			document.querySelector('#record-form').style.display = "none";
-
 		}
 
-		// set current date on form
-		let currentDate = new Date().toISOString().slice(0,10);
-		let formDate = document.querySelector("input[id='form-date']");
-		formDate.value = currentDate;
+		function setFormDate() {
+			// set current date on form
+			let currentDate = new Date().toISOString().slice(0,10);
+			let formDate = document.querySelector("input[id='form-date']");
+			formDate.value = currentDate;
+		}
 	  
     </script>
 {{end}}

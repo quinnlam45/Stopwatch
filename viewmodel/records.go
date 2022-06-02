@@ -31,7 +31,7 @@ func NewRecords() Records {
 		display_record.Time = record.Time.Format("15:04:05")
 		display_record.Distance = record.Distance
 		display_record.DistanceUnit = record.DistanceUnit
-		display_record.By = record.By
+		display_record.By = record.CompletedBy
 		results.RecordList = append(results.RecordList, display_record)
 	}
 

@@ -30,14 +30,8 @@ func main() {
 }
 
 func connectToDatabase() *sql.DB {
-	//var server = "DESKTOP-TC8EDHO\\SQLEXPRESS"
-	// var port = 1433
-	// var user = "quinn"
-	// var database = "Stopwatch"
-	//connString := `sqlserver://quinn@DESKTOP-TC8EDHO\SQLEXPRESS/SQLEXPRESS?database=Stopwatch&connection+timeout=40`
 	connString := "odbc:server=DESKTOP-TC8EDHO\\SQLEXPRESS;user id=stopwatch_sa;password=stopwatch;database=Stopwatch"
-	// connString := fmt.Sprintf("server=%s;user id=%s;port=%d;database=%s;",
-	// 	server, user, port, database)
+
 	connector, err := mssql.NewConnector(connString)
 	if err != nil {
 		log.Fatalln(fmt.Errorf("unable to connect to database: %v", err))
