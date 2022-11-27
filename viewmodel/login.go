@@ -13,3 +13,10 @@ func NewLogin() Login {
 		Active: "login",
 	}
 }
+
+func NewAddUser() Login {
+	return Login{
+		Title:  "Add user",
+		Active: "add user",
+	}
+}

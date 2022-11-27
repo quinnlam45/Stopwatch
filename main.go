@@ -20,11 +20,7 @@ func main() {
 	templates := populateTemplates()
 	db := connectToDatabase()
 	defer db.Close()
-	// results, err := model.GetRecords()
-	// if err != nil {
-	// 	fmt.Printf("Result error: %v", err)
-	// }
-	// fmt.Printf("Results: %v", results)
+
 	controller.Startup(templates)
 	http.ListenAndServe(":8000", nil) //new(middleware.TimeoutMiddleware)
 }

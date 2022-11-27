@@ -2,40 +2,54 @@
 		<section>
 			<div id="stopwatch" name="stopwatch">
 				<div id="timer" name="timer"><p class="clock">00:00:00.00</p></div>
-				<div id="buttons" name="buttons" class="buttons">
-					<input id="start-button" class="btn btn-primary" type="button" onclick="start()" value="Start">
-					<input id="continue-button" class="btn btn-primary" type="button" style="display: none" onclick="continueTimer()" value="Continue">
-					<input id="pause-button" class="btn btn-primary" type="button" style="display: none" onclick="pause()" value="Pause">
-					<input id="stop-button" class="btn btn-primary" type="button" onclick="stop()" value="Stop">
-					<input id="reset-button" class="btn btn-primary" type="button" style="display: none" onclick="reset()" value="Reset">
+				<div id="buttons" name="buttons" class="d-flex flex-row justify-content-center align-content-center">
+						<div class="d-flex flex-column justify-content-end">
+							<input id="start-button" class="btn btn-primary" type="button" style="display: inline-block" onclick="start()" value="Start">
+							<input id="continue-button" class="btn btn-primary" type="button" style="display: none" onclick="continueTimer()" value="Continue">
+							<input id="pause-button" class="btn btn-primary" type="button" style="display: none" onclick="pause()" value="Pause">
+						</div>
+						<div class="d-flex flex-column">
+							<input id="stop-button" class="btn btn-primary" type="button" style="display: none" onclick="stop()" value="Stop">
+							<input id="reset-button" class="btn btn-primary" type="button" style="display: none" onclick="reset()" value="Reset">
+						</div>
 				</div> 
 			</div>
-			<div id="record-form" class="container" style="display: none">
-				<form method="post" action="/" class="row g-1 align-items-end">
+			<div id="record-form" class="container-sm" style="display: none">
+				<form method="post" action="/" class="row g-1">
 						<input type="hidden" id="ticker-time" name="ticker-time" value="">
-						<div class="col">
-							<label for="form-date">Date</label>
-							<input type="date" id="form-date" name="form-date" class="form-control form-control-sm"/>
+						
+						<div id="distance-input" class="row align-items-end">
+							<div class="col-sm">
+								<label for="distance">Distance</label>
+								<input type="number" min="0" step="0.1" id="distance" name="distance" class="form-control"/>
+							</div>
+							<div class="col-sm">
+								<select id="distance-unit" name="distance-unit" class="form-select">
+									<option value=1 selected>Miles</option>
+									<option value=2>Km</option>
+								</select>
+							</div>
 						</div>
-						<div class="col-2">
-							<label for="distance">Distance</label>
-							<input type="number" min="0" step="0.1" id="distance" name="distance" class="form-control form-control-sm"/>
+						
+						<div id="date-by-input" class="row align-items-end">
+							<div class="col-sm-7">
+								<label for="form-date">Date</label>
+								<input type="date" id="form-date" name="form-date" class="form-control"/>
+							</div>
+							<div class="col-sm-5">
+								<select id="completed-by" name="completed-by" class="form-select">
+									<option value=1 selected>Bike</option>
+									<option value=2>Running</option>
+								</select>
+							</div>
 						</div>
-						<div class="col">
-							<select id="distance-unit" name="distance-unit" class="form-select form-select-sm">
-								<option value=1 selected>Miles</option>
-								<option value=2>Km</option>
-							</select>
+
+						<div class="row align-items-end">
+							<div class="col-3">
+								<input class="btn btn-primary" type="submit" value="Submit"/>
+							</div>
 						</div>
-						<div class="col">
-							<select id="completed-by" name="completed-by" class="form-select form-select-sm">
-								<option value=1 selected>Bike</option>
-								<option value=2>Running</option>
-							</select>
-						</div>
-						<div class="col">
-							<input class="btn btn-primary btn-sm" type="submit" value="Submit"/>
-						</div>
+
 				</form>
 			</div>
 		</section>
@@ -73,44 +87,60 @@
 			msElapsed = Date.now() - startTime;
 			dispElapsed = displayTime(msElapsed);
 			document.querySelector('.clock').textContent = dispElapsed;
-		}		
+		}
+		
+		function hideAllButtons() {
+			document.querySelector('#start-button').style.display = "none";
+			document.querySelector('#pause-button').style.display = "none";
+			document.querySelector('#continue-button').style.display = "none";
+			document.querySelector('#stop-button').style.display = "none";			
+			document.querySelector('#reset-button').style.display = "none";			
+		}
 		
 		function start(msElapsed = 0) {
 			startTime = Date.now() - msElapsed
 			createClock = setInterval(startTimer, 10, startTime);
-			document.querySelector('#reset-button').style.display = "inline";
-			document.querySelector('#pause-button').style.display = "inline";
 			document.querySelector('#start-button').style.display = "none";
+			document.querySelector('#pause-button').style.display = "inline-block";
+			document.querySelector('#stop-button').style.display = "inline-block";
 		}
 
 		function stop() {
 			clearInterval(createClock);
 			setFormDate();
-			document.querySelector('#record-form').style.display = "inline";
+			document.querySelector('#pause-button').style.display = "none";
+			document.querySelector('#stop-button').style.display = "none";
+			document.querySelector('#reset-button').style.display = "inline-block";
+			document.querySelector('#record-form').style.display = "inline-block";
 			let formTime = document.querySelector("input[id='ticker-time']");
 			formTime.value = dispElapsed;
 		}
 		
 		function reset() {
 			msElapsed = 0
-			document.querySelector('#start-button').style.display = "inline";
-			document.querySelector('#pause-button').style.display = "none";
-			document.querySelector('#continue-button').style.display = "none";
 			document.querySelector('.clock').textContent = "00:00:00.00";
+			document.querySelector('#pause-button').style.display = "none";
+			document.querySelector('#reset-button').style.display = "none";
+			document.querySelector('#continue-button').style.display = "none";
+			document.querySelector('#stop-button').style.display = "none";
 			document.querySelector('#record-form').style.display = "none";
+			document.querySelector('#start-button').style.display = "inline-block";
 		}
 
 		function pause() {
 			stop();
-			//console.log(msElapsed);
-			document.querySelector('#continue-button').style.display = "inline";
 			document.querySelector('#pause-button').style.display = "none";
+			document.querySelector('#stop-button').style.display = "none";
+			document.querySelector('#record-form').style.display = "inline-block";
+			document.querySelector('#continue-button').style.display = "inline-block";
 		}
 
 		function continueTimer() {
 			start(msElapsed);
 			document.querySelector('#continue-button').style.display = "none";
 			document.querySelector('#record-form').style.display = "none";
+			document.querySelector('#reset-button').style.display = "none";
+			document.querySelector('#stop-button').style.display = "inline-block";
 		}
 
 		function setFormDate() {
