@@ -100,7 +100,7 @@
 		function start(msElapsed = 0) {
 			startTime = Date.now() - msElapsed
 			createClock = setInterval(startTimer, 10, startTime);
-			document.querySelector('#start-button').style.display = "none";
+			hideAllButtons()
 			document.querySelector('#pause-button').style.display = "inline-block";
 			document.querySelector('#stop-button').style.display = "inline-block";
 		}
@@ -108,8 +108,7 @@
 		function stop() {
 			clearInterval(createClock);
 			setFormDate();
-			document.querySelector('#pause-button').style.display = "none";
-			document.querySelector('#stop-button').style.display = "none";
+			hideAllButtons()
 			document.querySelector('#reset-button').style.display = "inline-block";
 			document.querySelector('#record-form').style.display = "inline-block";
 			let formTime = document.querySelector("input[id='ticker-time']");
@@ -119,27 +118,22 @@
 		function reset() {
 			msElapsed = 0
 			document.querySelector('.clock').textContent = "00:00:00.00";
-			document.querySelector('#pause-button').style.display = "none";
-			document.querySelector('#reset-button').style.display = "none";
-			document.querySelector('#continue-button').style.display = "none";
-			document.querySelector('#stop-button').style.display = "none";
-			document.querySelector('#record-form').style.display = "none";
+			hideAllButtons()
 			document.querySelector('#start-button').style.display = "inline-block";
 		}
 
 		function pause() {
 			stop();
-			document.querySelector('#pause-button').style.display = "none";
-			document.querySelector('#stop-button').style.display = "none";
+			hideAllButtons()
 			document.querySelector('#record-form').style.display = "inline-block";
 			document.querySelector('#continue-button').style.display = "inline-block";
+			document.querySelector('#stop-button').style.display = "inline-block";
 		}
 
 		function continueTimer() {
 			start(msElapsed);
-			document.querySelector('#continue-button').style.display = "none";
-			document.querySelector('#record-form').style.display = "none";
-			document.querySelector('#reset-button').style.display = "none";
+			hideAllButtons()
+			document.querySelector('#pause-button').style.display = "inline-block";
 			document.querySelector('#stop-button').style.display = "inline-block";
 		}
 
