@@ -43,7 +43,7 @@ p.clock {
 
 /*records*/
 .records {
-    font-size: 0.9em;
+    font-size: 0.8em;
 }
 
 #record-form {
@@ -69,4 +69,18 @@ form div {
 
 .btn-primary {
     background-color: #2D3047 !important
+}
+
+#records-container {
+    height: 200px; 
+    overflow: auto;
+}
+
+#header-row div {
+    padding: 0.25em;
+}
+
+#quick-filters button {
+    border-radius: 24px;
+    font-size: 0.9em;
 }
