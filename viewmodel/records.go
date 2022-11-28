@@ -27,7 +27,7 @@ func NewRecords() Records {
 
 	for _, record := range records {
 		display_record := &Record{}
-		display_record.Date = record.Date.Format("02 Jan 2006")
+		display_record.Date = record.Date.Format("02/01/2006")
 		display_record.Time = record.Time.Format("15:04:05")
 		display_record.Distance = record.Distance
 		display_record.DistanceUnit = record.DistanceUnit
