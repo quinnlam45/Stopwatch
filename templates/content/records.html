@@ -119,7 +119,7 @@
 			}
 		}
 
-		function resetFilter(event) {
+		function resetFilter() {
 			var table, tr, td, i;
 
 			table = document.getElementById("records-table");
@@ -141,50 +141,59 @@
 			}
 			
 			toggleFilter() {
-				const toggleFlag = () => {
-					if (this.toggleFlag) {
-						this.toggleFlag = false;
-					} else {
-						this.toggleFlag = true;
-					}
-					console.log(this.toggleFlag);
-				}
-
-				const toggleStyle = () => {
-					if (this.toggleFlag) {
-						this.className = "btn btn-secondary btn-sm";
-					} else {
-						this.className = "btn btn-outline-secondary btn-sm";
-					}
-				}
-
-				const toggleClose = () => {
-					if (this.toggleFlag) {
-						let html = this.innerHTML;
-						this.innerHTML = html + ' <i class="bi bi-x" style="display: inline-block;"></i>';
-					} else {
-						// remove icon by resetting with inner text
-						this.innerHTML = this.innerText;
-					}
-				}
-
-				toggleFlag();
-				toggleStyle();
-				toggleClose();
-
 				if (this.toggleFlag) {
-					filterDate(this.days);
+					this.toggleFlag = false;
 				} else {
-					resetFilter();
+					this.toggleFlag = true;
 				}
+			}
+
+			toggleStyle() {
+				if (this.toggleFlag) {
+					this.buttonObj.className = "btn btn-secondary btn-sm";
+				} else {
+					this.buttonObj.className = "btn btn-outline-secondary btn-sm";
+				}
+			}
+
+			toggleClose() {
+				if (this.toggleFlag) {
+					let html = this.buttonObj.innerHTML;
+					this.buttonObj.innerHTML = html + this.closeButton;
+				} else {
+					// remove icon by resetting with inner text
+					this.buttonObj.innerHTML = this.buttonObj.innerText;
+				}
+			}
+
+		}
+		
+		function changeToggleStyle(obj) {
+			obj.toggleFilter();
+			obj.toggleStyle();
+			obj.toggleClose();
+		}
+		
+		function filterDateToggle(obj) {
+			if (obj.toggleFlag) {
+				filterDate(obj.days);
+			} else {
+				resetFilter();
 			}
 		}
 
 		let weekFilterBtn = new FilterDateButton(7, "past-week");
 		let monthFilterBtn = new FilterDateButton(31, "past-month");
 
-		weekFilterBtn.buttonObj.addEventListener("click", weekFilterBtn.toggleFilter);
-		monthFilterBtn.buttonObj.addEventListener("click", monthFilterBtn.toggleFilter);
+		weekFilterBtn.buttonObj.addEventListener("click", () => {
+			changeToggleStyle(weekFilterBtn);
+			filterDateToggle(weekFilterBtn);
+		});
+
+		monthFilterBtn.buttonObj.addEventListener("click", () => {
+			changeToggleStyle(monthFilterBtn);
+			filterDateToggle(monthFilterBtn);
+		});
 
 		/*
 		function filterTable() {
