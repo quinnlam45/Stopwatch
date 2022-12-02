@@ -80,6 +80,10 @@ form div {
     padding: 0.25em;
 }
 
+#quick-filters {
+    padding: 0.4em;
+}
+
 #quick-filters button {
     border-radius: 24px;
     font-size: 0.9em;
