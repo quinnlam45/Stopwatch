@@ -82,9 +82,33 @@ form div {
 
 #quick-filters {
     padding: 0.4em;
+    overflow: auto;
+    white-space: nowrap;
+
+  /* Hide scrollbar for IE, Edge and Firefox */
+    -ms-overflow-style: none;  /* IE and Edge */
+    scrollbar-width: none;  /* Firefox */
 }
 
 #quick-filters button {
     border-radius: 24px;
     font-size: 0.9em;
+}
+
+ /* Hide scrollbar for Chrome, Safari and Opera */
+#quick-filters::-webkit-scrollbar {
+    display: none;
+}
+
+/* Chrome, Safari, Edge, Opera */
+#manual-time-input input::-webkit-outer-spin-button,
+#manual-time-input input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+/* Firefox */
+#manual-time-input input[type="number"] {
+  -moz-appearance: textfield;
+  appearance: textfield;
 }
