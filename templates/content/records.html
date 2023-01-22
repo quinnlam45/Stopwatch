@@ -3,37 +3,11 @@
 			<div id="records" class="container-fluid-sm records">
 				<div id="quick-filters">
 					<button id="past-week" type="button" class="btn btn-outline-secondary btn-sm">Past 7 days</button>
-					<button id="past-month" type="button" class="btn btn-outline-secondary btn-sm">Past month</button>
+					<button id="past-month" type="button" class="btn btn-outline-secondary btn-sm">Past 31 days</button>
+					<button id="bike-filter" type="button" class="btn btn-outline-secondary btn-sm">Bike</button>
+					<button id="running-filter" type="button" class="btn btn-outline-secondary btn-sm">Running</button>
 				</div>
 
-				<!--
-				<div id="filter-form" class="filter-form">
-					<form>
-						<div class="row g-1 align-items-end">
-							<div class="col-6">
-								<label for="date-startrange">From</label>
-								<input type="date" id="date-startrange" class="form-control form-control-sm"/>
-							</div>
-							<div class="col-6">
-								<label for="date-endrange">to</label>
-								<input type="date" id="date-endrange" class="form-control form-control-sm"/>
-							</div>
-						</div>
-
-						<div class="row g-1 align-items-end">
-							<div class="col">
-								<select id="completedby-filter" class="form-select form-select-sm">
-									<option>Bike</option>
-									<option>Running</option>
-								</select>
-							</div>
-							<div class="col">
-								<input class="btn btn-primary btn-sm" type="submit" value="Filter"/>
-							</div>
-						</div>
-					</form>
-				</div>
-				-->
 				<div id="table-headers" class="container-fluid-sm p-1">
 					<div id="header-row" class="row px-2">
 						<div class="col p-1">
@@ -71,27 +45,45 @@
 				</div>
 			</div>
 		</section>
-	</div>
+
 	<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p" crossorigin="anonymous"></script>
 
 	<script>
 		"use strict";
+		
+		const originalTable = document.getElementById("records-table").innerHTML;
 
 		function findStartDate(date, days) {
 			let endRange = new Date(Number(date));
-			let startRange = endRange.setDate(date.getDate() - days);
+			let startRange = new Date(endRange.setDate(date.getDate() - days));
 
 			return startRange;
 		}
 
-		function convertToISODate(dateString) {
-			let split_date = dateString.split("/");
-			let dd = split_date[0];
-			let mm = split_date[1];
-			let yyyy = split_date[2];
-			const isoDate = yyyy + "-"+ mm + "-"+ dd;
+		function convertToISODate(dateObj) {
+			const dateStr = dateObj.toISOString().substr(0, 10);
+			return dateStr;
+		}
 
-			return isoDate;
+		async function fetchRecords(url) {
+			const response = await fetch(url);
+			return response.json();
+		}
+
+		function renderRecords(data) {
+			let tableHtml = "";
+			
+			for (let row of data) {
+				tableHtml += 
+				`<tr>
+					<td>${row.date}</td>
+					<td>${row.time}</td>
+					<td>${row.distance} ${row.distanceUnit}</td>
+					<td>${row.by}</td>
+				</tr>`;
+			}
+
+			document.getElementById("records-table").innerHTML = tableHtml;
 		}
 
 		function filterDate(days) {
@@ -100,17 +92,36 @@
 			var table = document.getElementById("records-table");
 			var tr = table.getElementsByTagName("tr");
 
-			const endRange = new Date(Date.now())
-			const startRange = findStartDate(endRange, days)
-		
-			// Loop through all table rows, and hide those who don't match the search query
-			for (i = 0; i < tr.length; i++) {
-				td = tr[i].getElementsByTagName("td")[0];
-				if (td) {
-					let dateValue = td.textContent || td.innerText;
-					let convertedDate = new Date(convertToISODate(dateValue));
+			const endRange = convertToISODate(new Date(Date.now()));
+			const startRange = convertToISODate(findStartDate(new Date(Date.now()), days));
 
-					if (convertedDate >= startRange && convertedDate <= endRange) {
+			const baseUrl = "http://localhost:8000/records/filter?";
+			let url = encodeURI(`${baseUrl}from=${startRange}&to=${endRange}&ord=desc&col=Date`);
+
+			fetchRecords(url)
+			.then((results) => {
+				if (results.RecordList) {
+					renderRecords(results.RecordList)
+				} else {
+					renderRecords("")
+				};
+			});
+			
+		}
+		
+		function filterTableByText(targetText) {
+		  // Declare variables
+		  var i;
+		  var table = document.getElementById("records-table");
+		  var tr = table.getElementsByTagName("tr");
+		
+		  // Loop through all table rows, and hide those who don't match the search query
+		  for (i = 0; i < tr.length; i++) {
+				let td = tr[i].getElementsByTagName("td")[3];
+				if (td) {
+					let tableTxt = td.textContent || td.innerText;
+
+					if (tableTxt === targetText) {
 						tr[i].style.display = "";
 					} else {
 						tr[i].style.display = "none";
@@ -120,20 +131,13 @@
 		}
 
 		function resetFilter() {
-			var table, tr, td, i;
-
-			table = document.getElementById("records-table");
-			tr = table.getElementsByTagName("tr");
-		
-			// Loop through all table rows and display
-			for (i = 0; i < tr.length; i++) {
-					tr[i].style.display = "";
-			}			
+			let table = document.getElementById("records-table");
+			table.innerHTML = originalTable;		
 		}
 
-		class FilterDateButton {
-			constructor(days, buttonId) {
-				this.days = days;
+		class FilterButton {
+			constructor(filterVar, buttonId) {
+				this.filterVar = filterVar;
 				this.buttonId = buttonId;
 				this.toggleFlag = false;
 				this.buttonObj = document.getElementById(buttonId);
@@ -176,14 +180,24 @@
 		
 		function filterDateToggle(obj) {
 			if (obj.toggleFlag) {
-				filterDate(obj.days);
+				filterDate(obj.filterVar);
 			} else {
 				resetFilter();
 			}
 		}
 
-		let weekFilterBtn = new FilterDateButton(7, "past-week");
-		let monthFilterBtn = new FilterDateButton(31, "past-month");
+		function filterByToggle(obj) {
+			if (obj.toggleFlag) {
+				filterTableByText(obj.filterVar);
+			} else {
+				resetFilter();
+			}
+		}
+
+		let weekFilterBtn = new FilterButton(7, "past-week");
+		let monthFilterBtn = new FilterButton(31, "past-month");
+		let bikeFilterBtn = new FilterButton("Bike", "bike-filter");
+		let runningFilterBtn = new FilterButton("Running", "running-filter");
 
 		weekFilterBtn.buttonObj.addEventListener("click", () => {
 			changeToggleStyle(weekFilterBtn);
@@ -195,29 +209,16 @@
 			filterDateToggle(monthFilterBtn);
 		});
 
-		/*
-		function filterTable() {
-		  // Declare variables
-		  var input, filter, table, tr, td, i, txtValue;
-		  input = document.getElementById("myInput");
-		  filter = input.value.toUpperCase();
-		  table = document.getElementById("myTable");
-		  tr = table.getElementsByTagName("tr");
-		
-		  // Loop through all table rows, and hide those who don't match the search query
-		  for (i = 0; i < tr.length; i++) {
-			td = tr[i].getElementsByTagName("td")[0];
-			if (td) {
-			  txtValue = td.textContent || td.innerText;
-			  if (txtValue.toUpperCase().indexOf(filter) > -1) {
-				tr[i].style.display = "";
-			  } else {
-				tr[i].style.display = "none";
-			  }
-			}
-		  }
-		}
-		*/
+		bikeFilterBtn.buttonObj.addEventListener("click", () => {
+			changeToggleStyle(bikeFilterBtn);
+			filterByToggle(bikeFilterBtn);
+		});
+
+		runningFilterBtn.buttonObj.addEventListener("click", () => {
+			changeToggleStyle(runningFilterBtn);
+			filterByToggle(runningFilterBtn);
+		});		
+
 	</script>
 
 {{end}}
