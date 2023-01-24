@@ -31,7 +31,7 @@ func (h home) handleHome(w http.ResponseWriter, r *http.Request) {
 			log.Println(fmt.Errorf("error: %v", err))
 		}
 		date, _ := time.Parse("2006-01-02", r.Form.Get("form-date"))
-		timeElasped, _ := time.Parse("15:04:05", r.Form.Get("ticker-time"))
+		timeElasped, _ := time.Parse("15:04:05", r.Form.Get("time-record"))
 		distance, _ := strconv.ParseFloat(r.Form.Get("distance"), 32)
 		distanceUnit, _ := strconv.Atoi(r.Form.Get("distance-unit"))
 		completedBy, _ := strconv.Atoi(r.Form.Get("completed-by"))
