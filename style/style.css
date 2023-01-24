@@ -112,3 +112,15 @@ form div {
   -moz-appearance: textfield;
   appearance: textfield;
 }
+
+#override-btns .btn {
+    font-size: 0.9em;
+    text-align: left;
+}
+
+#custom-time-btns button {
+    font-size: 0.8em;
+    text-align: left;
+    padding: 0.1em;
+    color: #524f4f;
+}
