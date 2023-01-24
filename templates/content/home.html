@@ -14,12 +14,28 @@
 						</div>
 				</div> 
 			</div>
-			<div id="record-form" class="container-sm" style="display: none">
-				<form method="post" action="/" class="row g-1">
-						<input type="hidden" id="ticker-time" name="ticker-time" value="">
-						
-						<div id="distance-input" class="row align-items-end">
-							<div class="col-sm">
+			<div id="form-div" class="container-sm" style="display: none">
+				<form id="time-record-form" method="post" action="/" class="row g-1">
+						<input type="hidden" id="time-record" name="time-record" value="">
+
+						<div id="custom-time-btns" class="d-flex flex-row align-items-center justify-content-start">
+							<button id="add-custom-time-btn" type="button" class="btn btn-link">Add custom time</button>
+							<button id="close-custom-time-btn" type="button" class="btn btn-link" style="display: none;">Hide</button>
+						</div>
+
+						<div id="custom-time-container" style="display: none;">
+							<div id="custom-time-input" class="d-flex flex-row align-items-center justify-content-start">
+								<div><input type="text" id="hh" name="hh" value="00" min="0" max="23" class="form-control form-control-sm"/></div>:
+								<div><input type="text" id="mm" name="mm" value="00" min="0" max="59" class="form-control form-control-sm"/></div>:
+								<div><input type="text" id="ss" name="ss" value="00" min="0" max="59" class="form-control form-control-sm"/></div>.
+								<div><input type="text" id="ms" name="ms" value="00" min="0" max="10" class="form-control form-control-sm"/></div>
+							</div>
+						</div>
+
+						<div id="errorMsg" class="alert alert-danger alert-dismissible fade show" role="alert" style="display: none"></div>
+
+						<div id="distance-input" class="d-flex flex-row align-items-end justify-content-start p-2">
+							<div class="col-sm col-6">
 								<label for="distance">Distance</label>
 								<input type="number" min="0" step="0.1" id="distance" name="distance" class="form-control"/>
 							</div>
@@ -46,7 +62,14 @@
 
 						<div class="row align-items-end">
 							<div class="col-3">
-								<input class="btn btn-primary" type="submit" value="Submit"/>
+								<button id="submit-btn" class="btn btn-primary" type="button">Submit</button>
+							</div>
+						</div>
+						<div id="warning-msg" class="alert-warning" role="alert" style="display: none">
+							<div class="d-flex flex-row justify-content-start" id="msg">Manually entered time will override stopwatch time</div>
+							<div class="d-flex flex-row align-items-start justify-content-around" id="override-btns">
+								<button id="confirm-override-btn" type="button" class="btn btn-primary btn-sm">Ok</button>
+								<button id="use-stopwatch-time-btn" type="button" class="btn btn-primary btn-sm">Use stopwatch time</button>
 							</div>
 						</div>
 
@@ -58,6 +81,8 @@
 {{define "script"}}
 	<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p" crossorigin="anonymous"></script>
 	<script>
+		//'use strict'
+
 		function padTime(ms) {
 			if (ms) {
 				paddedTime = String(ms).padStart(2, '0');
@@ -88,19 +113,28 @@
 			dispElapsed = displayTime(msElapsed);
 			document.querySelector('.clock').textContent = dispElapsed;
 		}
+
+		function setTimeRecord(timeValue) {
+			let timeRecordInput = document.querySelector("input[id='time-record']");
+			timeRecordInput.value = timeValue;
+		}
 		
-		function hideAllButtons() {
+		function hideAllElements() {
 			document.querySelector('#start-button').style.display = "none";
 			document.querySelector('#pause-button').style.display = "none";
 			document.querySelector('#continue-button').style.display = "none";
 			document.querySelector('#stop-button').style.display = "none";			
 			document.querySelector('#reset-button').style.display = "none";			
+			document.querySelector('#reset-button').style.display = "none";			
+			document.querySelector('#form-div').style.display = "none";
+			document.querySelector('#warning-msg').style.display = "none";
+			document.querySelector('#custom-time-container').style.display = "none";
 		}
 		
 		function start(msElapsed = 0) {
-			startTime = Date.now() - msElapsed
+			startTime = Date.now() - msElapsed;
 			createClock = setInterval(startTimer, 10, startTime);
-			hideAllButtons()
+			hideAllElements()
 			document.querySelector('#pause-button').style.display = "inline-block";
 			document.querySelector('#stop-button').style.display = "inline-block";
 		}
@@ -108,31 +142,30 @@
 		function stop() {
 			clearInterval(createClock);
 			setFormDate();
-			hideAllButtons()
+			hideAllElements();
 			document.querySelector('#reset-button').style.display = "inline-block";
-			document.querySelector('#record-form').style.display = "inline-block";
-			let formTime = document.querySelector("input[id='ticker-time']");
-			formTime.value = dispElapsed;
+			document.querySelector('#form-div').style.display = "inline-block";
+			setTimeRecord(dispElapsed);
 		}
 		
 		function reset() {
 			msElapsed = 0
 			document.querySelector('.clock').textContent = "00:00:00.00";
-			hideAllButtons()
+			hideAllElements();
 			document.querySelector('#start-button').style.display = "inline-block";
 		}
 
 		function pause() {
 			stop();
-			hideAllButtons()
-			document.querySelector('#record-form').style.display = "inline-block";
+			hideAllElements();
+			document.querySelector('#form-div').style.display = "inline-block";
 			document.querySelector('#continue-button').style.display = "inline-block";
 			document.querySelector('#stop-button').style.display = "inline-block";
 		}
 
 		function continueTimer() {
 			start(msElapsed);
-			hideAllButtons()
+			hideAllElements();
 			document.querySelector('#pause-button').style.display = "inline-block";
 			document.querySelector('#stop-button').style.display = "inline-block";
 		}
@@ -143,6 +176,123 @@
 			let formDate = document.querySelector("input[id='form-date']");
 			formDate.value = currentDate;
 		}
-	  
+
+		// check character input
+
+		function checkChar(char, regExp) {
+			return regExp.test(char);  
+		}
+
+		function checkNumRange(inputVal, min, max) {
+			let inputNum = Number(inputVal);
+			return (inputNum >= Number(min) && inputNum <= Number(max));
+		}
+
+		function checkInput(event) {
+			let inputVal = event.data;
+			let inputType = event.inputType;
+			const isNum = checkChar(inputVal, /\d/);
+		
+			if (isNum) {
+				event.preventDefault();
+				
+				let currentInputBoxVal = String(event.target.value);
+
+				if (event.target.selectionStart === 0) {
+					event.target.value = "0" + String(inputVal);
+				} else if (event.target.selectionStart === 1) {
+					event.target.value = currentInputBoxVal.substr(0,1) + String(inputVal);
+				} else if (event.target.selectionStart === 2) {    
+					if (currentInputBoxVal.startsWith("0")) {
+						// move current number over and add new value
+						event.target.value = currentInputBoxVal.substr(1) + String(inputVal);
+					} else {
+						return;
+					}      
+				}
+
+				let inRange = checkNumRange(event.target.value, event.target.min, event.target.max);
+				
+				if (!inRange) {
+					let errorMsg = document.querySelector('#errorMsg');
+					errorMsg.innerText = `Please enter a number from ${event.target.min} to ${event.target.max}`;
+					errorMsg.style.display = 'inline-block';
+				} else {
+					errorMsg.style.display = 'none';
+				}
+				
+			} else if (inputType.includes('delete')) {
+				// allow deletion
+				return;
+			} else {
+				event.preventDefault();
+			}
+		
+		}
+
+		const manualTimeDiv = document.querySelector('#custom-time-input');
+		const timeInputElements = manualTimeDiv.querySelectorAll('div > input');
+
+		timeInputElements.forEach((item) => {
+			let inputBox = document.querySelector(`#${item.id}`)
+			inputBox.addEventListener('mouseup', (event) => {event.target.select()});
+			inputBox.addEventListener('beforeinput', checkInput);
+		})
+
+		function getManualTimeValues(manualTimeInputElements) {
+			let timeArray = [];
+			
+			manualTimeInputElements.forEach((item) => {
+				timeArray.push(item.value);
+			})
+			
+			return timeArray;
+		}
+
+		function formatManualTimeValues(manualTimeInputElements) {
+			let [hh, mm, ss, ms] = getManualTimeValues(manualTimeInputElements);
+			return `${hh}:${mm}:${ss}.${ms}`;
+		}
+
+		const submitBtn = document.querySelector('#submit-btn');
+		submitBtn.addEventListener('click', () => {
+			let stopwatchTime = document.querySelector('.clock').textContent;
+			let manualTimeValues = formatManualTimeValues(timeInputElements);
+
+			if (stopwatchTime != "00:00:00.00" && manualTimeValues != "00:00:00.00") {
+				document.querySelector('#warning-msg').style.display = "inline-block";
+			} else if (stopwatchTime === "00:00:00.00" && manualTimeValues != "00:00:00.00") {
+				setTimeRecord(manualTimeValues);
+				document.querySelector('#time-record-form').submit();
+			} else {
+				document.querySelector('#time-record-form').submit();
+			}
+
+		})
+
+		const overrideBtn = document.querySelector('#confirm-override-btn');
+		overrideBtn.addEventListener('click', () => {
+			let manualTimeValues = formatManualTimeValues(timeInputElements);
+			setTimeRecord(manualTimeValues);
+			document.querySelector('#time-record-form').submit();
+		})
+
+		const useStopwatchTimeBtn = document.querySelector('#use-stopwatch-time-btn');
+		useStopwatchTimeBtn.addEventListener('click', () => {
+			document.querySelector('#time-record-form').submit();
+		})
+
+		const addCustomTimeBtn = document.querySelector('#add-custom-time-btn');
+		addCustomTimeBtn.addEventListener('click', () => {
+			document.querySelector('#custom-time-container').style.display = "inline-block";
+			document.querySelector('#close-custom-time-btn').style.display = "inline-block";
+		})
+
+		const closeCustomTimeBtn = document.querySelector('#close-custom-time-btn');
+		closeCustomTimeBtn.addEventListener('click', () => {
+			document.querySelector('#custom-time-container').style.display = "none";
+			document.querySelector('#close-custom-time-btn').style.display = "none";
+		})
+
     </script>
 {{end}}
