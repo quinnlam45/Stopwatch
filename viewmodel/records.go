@@ -20,30 +20,25 @@ type Record struct {
 	By           string  `json:"by"`
 }
 
-func GetRecords() Records {
-	results := Records{
-		Title:  "Records",
-		Active: "records",
-	}
-	records, _ := model.GetAllRecords()
+func addRecordsViewmodel(returnedRecords []*model.Record) *Records {
+	results := &Records{}
 
-	for _, record := range records {
+	for _, record := range returnedRecords {
 		display_record := &Record{}
+
 		display_record.Date = record.Date.Format("02/01/2006")
 		display_record.Time = record.Time.Format("15:04:05")
 		display_record.Distance = record.Distance
 		display_record.DistanceUnit = record.DistanceUnit
 		display_record.By = record.CompletedBy
+
 		results.RecordList = append(results.RecordList, display_record)
 	}
 
 	return results
 }
 
-func FilterRecords(startRange, endRange, ord, colName string) Records {
-	results := Records{}
-	records, _ := model.GetRecords(startRange, endRange)
-
+func sortRecords(ord, colName string, records []*model.Record) *Records {
 	if ord == "desc" {
 		switch {
 		case colName == "Date":
@@ -64,16 +59,24 @@ func FilterRecords(startRange, endRange, ord, colName string) Records {
 		}
 	}
 
-	for _, record := range records {
-		display_record := &Record{}
-		display_record.Date = record.Date.Format("02/01/2006")
-		display_record.Time = record.Time.Format("15:04:05")
-		display_record.Distance = record.Distance
-		display_record.DistanceUnit = record.DistanceUnit
-		display_record.By = record.CompletedBy
-		results.RecordList = append(results.RecordList, display_record)
-		//fmt.Println(display_record)
-	}
+	results := addRecordsViewmodel(records)
 
 	return results
+}
+
+func GetRecords() *Records {
+	records, _ := model.GetAllRecords()
+
+	results := addRecordsViewmodel(records)
+	results.Title = "Records"
+	results.Active = "records"
+
+	return results
+}
+
+func FilterRecords(startRange, endRange, ord, colName string) *Records {
+	records, _ := model.GetRecords(startRange, endRange)
+	recordResults := sortRecords(ord, colName, records)
+
+	return recordResults
 }
