@@ -35,29 +35,37 @@
 						<div id="errorMsg" class="alert alert-danger alert-dismissible fade show" role="alert" style="display: none"></div>
 
 						<div id="distance-input" class="d-flex flex-row align-items-end justify-content-start p-2">
+
 							<div class="col-sm col-6">
 								<label for="distance">Distance</label>
 								<input type="number" min="0" step="0.1" id="distance" name="distance" class="form-control"/>
 							</div>
+
 							<div class="col-sm">
 								<select id="distance-unit" name="distance-unit" class="form-select">
 									<option value=1 selected>Miles</option>
 									<option value=2>Km</option>
 								</select>
 							</div>
+
 						</div>
 						
 						<div id="date-by-input" class="row align-items-end">
+
 							<div class="col-sm-7">
 								<label for="form-date">Date</label>
 								<input type="date" id="form-date" name="form-date" class="form-control"/>
+								<label for="form-time">Time</label>
+								<input type="time" id="form-time" name="form-time" class="form-control"/>
 							</div>
+
 							<div class="col-sm-5">
 								<select id="completed-by" name="completed-by" class="form-select">
 									<option value=1 selected>Bike</option>
 									<option value=2>Running</option>
 								</select>
 							</div>
+
 						</div>
 
 						<div class="row align-items-end">
@@ -65,6 +73,7 @@
 								<button id="submit-btn" class="btn btn-primary" type="button">Submit</button>
 							</div>
 						</div>
+						
 						<div id="warning-msg" class="alert-warning" role="alert" style="display: none">
 							<div class="d-flex flex-row justify-content-start" id="msg">Manually entered time will override stopwatch time</div>
 							<div class="d-flex flex-row align-items-start justify-content-around" id="override-btns">
@@ -141,7 +150,7 @@
 
 		function stop() {
 			clearInterval(createClock);
-			setFormDate();
+			setFormDateTime();
 			hideAllElements();
 			document.querySelector('#reset-button').style.display = "inline-block";
 			document.querySelector('#form-div').style.display = "inline-block";
@@ -170,11 +179,14 @@
 			document.querySelector('#stop-button').style.display = "inline-block";
 		}
 
-		function setFormDate() {
-			// set current date on form
-			let currentDate = new Date().toISOString().slice(0,10);
+		function setFormDateTime() {
+			let datetimeNow = new Date().toISOString().slice(0,19);
+			let [dateStr, timeStr] = datetimeNow.split("T");
+			
 			let formDate = document.querySelector("input[id='form-date']");
-			formDate.value = currentDate;
+			let formTime = document.querySelector("input[id='form-time']");
+			formDate.value = dateStr;
+			formTime.value = timeStr;
 		}
 
 		// check character input
