@@ -30,7 +30,10 @@ func (h home) handleHome(w http.ResponseWriter, r *http.Request) {
 		if err != nil {
 			log.Println(fmt.Errorf("error: %v", err))
 		}
-		date, _ := time.Parse("2006-01-02", r.Form.Get("form-date"))
+
+		dateTimeStr := fmt.Sprintf("%s %s", r.Form.Get("form-date"), r.Form.Get("form-time"))
+
+		date, _ := time.Parse("2006-01-02 15:04:05", dateTimeStr)
 		timeElasped, _ := time.Parse("15:04:05", r.Form.Get("time-record"))
 		distance, _ := strconv.ParseFloat(r.Form.Get("distance"), 32)
 		distanceUnit, _ := strconv.Atoi(r.Form.Get("distance-unit"))
