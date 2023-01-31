@@ -51,15 +51,16 @@
 	<script>
 		"use strict";
 		
-		const originalTable = document.getElementById("records-table").innerHTML;
-
-		function findStartDate(date, days) {
-			let endRange = new Date(Number(date));
-			let startRange = new Date(endRange.setDate(date.getDate() - days));
-
-			return startRange;
+		function addDays(date, days) {			
+			let currentDate = new Date(Number(date));
+			let noOfDays = Number(days);
+			return new Date(currentDate.setDate(currentDate.getDate() + noOfDays));
 		}
 
+		function getOffsetCurrentDate() {
+			return addDays(new Date(Date.now()), 1)
+		}
+		
 		function convertToISODate(dateObj) {
 			const dateStr = dateObj.toISOString().substr(0, 10);
 			return dateStr;
@@ -70,7 +71,7 @@
 			return response.json();
 		}
 
-		function renderRecords(data) {
+		function renderRecordsTable(data) {
 			let tableHtml = "";
 			
 			for (let row of data) {
@@ -86,26 +87,49 @@
 			document.getElementById("records-table").innerHTML = tableHtml;
 		}
 
+		const baseUrl = "http://localhost:8000/records/filter?";
+
+		const newDate = getOffsetCurrentDate();
+		const currentDateOffset = convertToISODate(newDate);
+
+		let url = encodeURI(`${baseUrl}from=1900-01-01&to=${currentDateOffset}&ord=desc&col=Date`);
+
+		let originalJsonData = []
+
+		fetchRecords(url)
+		.then((results) => {
+			renderRecordsTable(results.RecordList);
+			return results.RecordList;
+		})
+		.then((recordslist) => {
+			originalJsonData = [...recordslist];
+			console.log(originalJsonData);
+		})
+		.catch((err) => console.log(err))
+
 		function filterDate(days) {
 			var table, tr, td, i;
 
 			var table = document.getElementById("records-table");
 			var tr = table.getElementsByTagName("tr");
 
-			const endRange = convertToISODate(new Date(Date.now()));
-			const startRange = convertToISODate(findStartDate(new Date(Date.now()), days));
+			const endRange = convertToISODate(getOffsetCurrentDate());
+			const startRange = convertToISODate(addDays(new Date(Date.now()), days));
 
 			const baseUrl = "http://localhost:8000/records/filter?";
+			
+			//abstract out as date filtering func
 			let url = encodeURI(`${baseUrl}from=${startRange}&to=${endRange}&ord=desc&col=Date`);
 
 			fetchRecords(url)
 			.then((results) => {
 				if (results.RecordList) {
-					renderRecords(results.RecordList)
+					renderRecordsTable(results.RecordList);
 				} else {
-					renderRecords("")
-				};
-			});
+					renderRecordsTable("");
+				}
+			})
+			.catch((err) => console.log(err));
 			
 		}
 		
@@ -131,8 +155,7 @@
 		}
 
 		function resetFilter() {
-			let table = document.getElementById("records-table");
-			table.innerHTML = originalTable;		
+			renderRecordsTable(originalJsonData);	
 		}
 
 		class FilterButton {
@@ -165,7 +188,7 @@
 					let html = this.buttonObj.innerHTML;
 					this.buttonObj.innerHTML = html + this.closeButton;
 				} else {
-					// remove icon by resetting with inner text
+					// remove icon by using inner text to reset
 					this.buttonObj.innerHTML = this.buttonObj.innerText;
 				}
 			}
@@ -194,8 +217,8 @@
 			}
 		}
 
-		let weekFilterBtn = new FilterButton(7, "past-week");
-		let monthFilterBtn = new FilterButton(31, "past-month");
+		let weekFilterBtn = new FilterButton(-7, "past-week");
+		let monthFilterBtn = new FilterButton(-31, "past-month");
 		let bikeFilterBtn = new FilterButton("Bike", "bike-filter");
 		let runningFilterBtn = new FilterButton("Running", "running-filter");
 
