@@ -19,5 +19,11 @@ func Startup(templates map[string]*template.Template) {
 	homeController.registerRoutes()
 	recordsController.registerRoutes()
 	userController.registerRoutes()
-	http.Handle("/style/", http.FileServer(http.Dir(".")))
+	http.Handle("/static/style/", http.StripPrefix("/static/style", http.FileServer(http.Dir("static/style"))))
+	http.HandleFunc("/static/script/", func(w http.ResponseWriter, r *http.Request) {
+		w.Header().Set("Content-Type", "text/javascript")
+
+		fileserver := http.StripPrefix("/static/script", http.FileServer(http.Dir("static/script")))
+		fileserver.ServeHTTP(w, r)
+	})
 }
