@@ -116,7 +116,7 @@
 			const endRange = convertToISODate(getOffsetCurrentDate());
 			const startRange = convertToISODate(addDays(new Date(Date.now()), days));
 
-			const baseUrl = "http://localhost:8000/records/filter?";
+			//const baseUrl = "http://localhost:8000/records/filter?";
 			
 			//abstract out as date filtering func
 			let url = encodeURI(`${baseUrl}from=${startRange}&to=${endRange}&ord=desc&col=Date`);
