@@ -14,9 +14,19 @@ import (
 	"database/sql"
 
 	mssql "github.com/denisenkom/go-mssqldb"
+	"github.com/joho/godotenv"
 )
 
+func loadEnvVariables() {
+	err := godotenv.Load(".env")
+
+	if err != nil {
+		log.Fatal("Error loading .env file")
+	}
+}
+
 func main() {
+	loadEnvVariables()
 	templates := populateTemplates()
 	db := connectToDatabase()
 	defer db.Close()
@@ -26,7 +36,7 @@ func main() {
 }
 
 func connectToDatabase() *sql.DB {
-	connString := "odbc:server=DESKTOP-TC8EDHO\\SQLEXPRESS;user id=stopwatch_sa;password=stopwatch;database=Stopwatch"
+	connString := os.Getenv("CONNECTION_STRING")
 
 	connector, err := mssql.NewConnector(connString)
 	if err != nil {
