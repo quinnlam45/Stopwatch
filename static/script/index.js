@@ -1,5 +1,5 @@
 import {Stopwatch} from './stopwatch.js'
-import {checkInput} from './checkInput.js'
+import {checkInput} from './check-input.js'
 import {setFormDateTime, setFormTimeRecord, formatManualTimeValues, submitTimeRecord} from './stopwatchForm.js'
 
 let stopwatch = new Stopwatch();
