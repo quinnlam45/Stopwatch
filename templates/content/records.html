@@ -48,51 +48,21 @@
 
 	<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p" crossorigin="anonymous"></script>
 
-	<script>
-		"use strict";
-		
-		function addDays(date, days) {			
-			let currentDate = new Date(Number(date));
-			let noOfDays = Number(days);
-			return new Date(currentDate.setDate(currentDate.getDate() + noOfDays));
-		}
-
-		function getOffsetCurrentDate() {
-			return addDays(new Date(Date.now()), 1)
-		}
-		
-		function convertToISODate(dateObj) {
-			const dateStr = dateObj.toISOString().substr(0, 10);
-			return dateStr;
-		}
+	<script type="module">
+		import {FilterButton} from './static/script/filter-button.js'
+		import {renderRecordsTable, filterTableByText, filterDate} from './static/script/filter-records.js'
+		import {addDays, getOffsetCurrentDate, convertToISODate, dateStrToISODateFormat} from './static/script/date-helpers.js'
 
 		async function fetchRecords(url) {
 			const response = await fetch(url);
 			return response.json();
 		}
 
-		function renderRecordsTable(data) {
-			let tableHtml = "";
-			
-			for (let row of data) {
-				tableHtml += 
-				`<tr>
-					<td>${row.date}</td>
-					<td>${row.time}</td>
-					<td>${row.distance} ${row.distanceUnit}</td>
-					<td>${row.by}</td>
-				</tr>`;
-			}
+		const baseUrl = "http://localhost:8000";
 
-			document.getElementById("records-table").innerHTML = tableHtml;
-		}
+		const currentDateOffset = convertToISODate(getOffsetCurrentDate());
 
-		const baseUrl = "http://localhost:8000/records/filter?";
-
-		const newDate = getOffsetCurrentDate();
-		const currentDateOffset = convertToISODate(newDate);
-
-		let url = encodeURI(`${baseUrl}from=1900-01-01&to=${currentDateOffset}&ord=desc&col=Date`);
+		let url = encodeURI(`${baseUrl}/records/filter?from=1900-01-01&to=${currentDateOffset}&ord=desc&col=Date`);
 
 		let originalJsonData = []
 
@@ -107,105 +77,11 @@
 		})
 		.catch((err) => console.log(err))
 
-		function filterDate(days) {
-			var table, tr, td, i;
-
-			var table = document.getElementById("records-table");
-			var tr = table.getElementsByTagName("tr");
-
-			const endRange = convertToISODate(getOffsetCurrentDate());
-			const startRange = convertToISODate(addDays(new Date(Date.now()), days));
-
-			//const baseUrl = "http://localhost:8000/records/filter?";
-			
-			//abstract out as date filtering func
-			let url = encodeURI(`${baseUrl}from=${startRange}&to=${endRange}&ord=desc&col=Date`);
-
-			fetchRecords(url)
-			.then((results) => {
-				if (results.RecordList) {
-					renderRecordsTable(results.RecordList);
-				} else {
-					renderRecordsTable("");
-				}
-			})
-			.catch((err) => console.log(err));
-			
-		}
-		
-		function filterTableByText(targetText) {
-		  // Declare variables
-		  var i;
-		  var table = document.getElementById("records-table");
-		  var tr = table.getElementsByTagName("tr");
-		
-		  // Loop through all table rows, and hide those who don't match the search query
-		  for (i = 0; i < tr.length; i++) {
-				let td = tr[i].getElementsByTagName("td")[3];
-				if (td) {
-					let tableTxt = td.textContent || td.innerText;
-
-					if (tableTxt === targetText) {
-						tr[i].style.display = "";
-					} else {
-						tr[i].style.display = "none";
-					}
-				}
-			}
-		}
-
-		function resetFilter() {
-			renderRecordsTable(originalJsonData);	
-		}
-
-		class FilterButton {
-			constructor(filterVar, buttonId) {
-				this.filterVar = filterVar;
-				this.buttonId = buttonId;
-				this.toggleFlag = false;
-				this.buttonObj = document.getElementById(buttonId);
-				this.closeButton = ' <i class="bi bi-x" style="display: inline-block;"></i>';
-			}
-			
-			toggleFilter() {
-				if (this.toggleFlag) {
-					this.toggleFlag = false;
-				} else {
-					this.toggleFlag = true;
-				}
-			}
-
-			toggleStyle() {
-				if (this.toggleFlag) {
-					this.buttonObj.className = "btn btn-secondary btn-sm";
-				} else {
-					this.buttonObj.className = "btn btn-outline-secondary btn-sm";
-				}
-			}
-
-			toggleClose() {
-				if (this.toggleFlag) {
-					let html = this.buttonObj.innerHTML;
-					this.buttonObj.innerHTML = html + this.closeButton;
-				} else {
-					// remove icon by using inner text to reset
-					this.buttonObj.innerHTML = this.buttonObj.innerText;
-				}
-			}
-
-		}
-		
-		function changeToggleStyle(obj) {
-			obj.toggleFilter();
-			obj.toggleStyle();
-			obj.toggleClose();
-		}
-		
 		function filterDateToggle(obj) {
 			if (obj.toggleFlag) {
 				filterDate(obj.filterVar);
 			} else {
-				resetFilter();
+				renderRecordsTable(originalJsonData);
 			}
 		}
 
@@ -213,7 +89,7 @@
 			if (obj.toggleFlag) {
 				filterTableByText(obj.filterVar);
 			} else {
-				resetFilter();
+				renderRecordsTable(originalJsonData);
 			}
 		}
 
@@ -223,22 +99,22 @@
 		let runningFilterBtn = new FilterButton("Running", "running-filter");
 
 		weekFilterBtn.buttonObj.addEventListener("click", () => {
-			changeToggleStyle(weekFilterBtn);
+			weekFilterBtn.changeToggleStyle();
 			filterDateToggle(weekFilterBtn);
 		});
 
 		monthFilterBtn.buttonObj.addEventListener("click", () => {
-			changeToggleStyle(monthFilterBtn);
+			monthFilterBtn.changeToggleStyle();
 			filterDateToggle(monthFilterBtn);
 		});
 
 		bikeFilterBtn.buttonObj.addEventListener("click", () => {
-			changeToggleStyle(bikeFilterBtn);
+			bikeFilterBtn.changeToggleStyle();
 			filterByToggle(bikeFilterBtn);
 		});
 
 		runningFilterBtn.buttonObj.addEventListener("click", () => {
-			changeToggleStyle(runningFilterBtn);
+			runningFilterBtn.changeToggleStyle();
 			filterByToggle(runningFilterBtn);
 		});		
 
