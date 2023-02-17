@@ -59,11 +59,8 @@
 		}
 
 		const baseUrl = "http://localhost:8000";
-
 		const currentDateOffset = convertToISODate(getOffsetCurrentDate());
-
 		let url = encodeURI(`${baseUrl}/records/filter?from=1900-01-01&to=${currentDateOffset}&ord=desc&col=Date`);
-
 		let originalJsonData = []
 
 		fetchRecords(url)
@@ -73,7 +70,7 @@
 		})
 		.then((recordslist) => {
 			originalJsonData = [...recordslist];
-			console.log(originalJsonData);
+			//console.log(originalJsonData);
 		})
 		.catch((err) => console.log(err))
 

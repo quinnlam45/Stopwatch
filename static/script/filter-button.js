@@ -28,7 +28,7 @@ export class FilterButton {
             let html = this.buttonObj.innerHTML;
             this.buttonObj.innerHTML = html + this.closeButton;
         } else {
-            // remove icon by using inner text to reset
+            // remove icon html by using inner text to reset
             this.buttonObj.innerHTML = this.buttonObj.innerText;
         }
     }
@@ -40,3 +40,4 @@ export class FilterButton {
     }
 
 }
+

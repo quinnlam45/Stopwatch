@@ -1,7 +1,6 @@
 import {addDays, getOffsetCurrentDate, dateStrToISODateFormat} from './date-helpers.js'
 
 function filterDate(days) {
-
     let table = document.getElementById("records-table");
     let tr = table.getElementsByTagName("tr");
 
@@ -21,8 +20,7 @@ function filterDate(days) {
                 tr[i].style.display = "none";
             }
         }
-    }
-    
+    }    
 }
 
 function renderRecordsTable(data) {
