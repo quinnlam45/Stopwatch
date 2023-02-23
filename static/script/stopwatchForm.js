@@ -30,7 +30,9 @@ function formatManualTimeValues(manualTimeInputElements) {
 
 function submitTimeRecord(stopwatchTime, manualTimeValues) {
     if (stopwatchTime != "00:00:00.00" && manualTimeValues != "00:00:00.00") {
-        document.querySelector('#warning-msg').style.display = "inline-block";
+        let warningMsg = document.querySelector('#warning-msg')
+        warningMsg.style.display = "inline-block";
+        warningMsg.scrollIntoView();
     } else if (stopwatchTime === "00:00:00.00" && manualTimeValues != "00:00:00.00") {
         setFormTimeRecord(manualTimeValues);
         document.querySelector('#time-record-form').submit();
