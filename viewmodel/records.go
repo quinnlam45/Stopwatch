@@ -3,7 +3,7 @@ package viewmodel
 import (
 	"sort"
 
-	"github.com/pluralsight/webservice/model"
+	"github.com/quinnlam45/stopwatch/model"
 )
 
 type Records struct {

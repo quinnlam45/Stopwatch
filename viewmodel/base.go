@@ -1,6 +1,6 @@
 package viewmodel
 
-import "github.com/pluralsight/webservice/model"
+import "github.com/quinnlam45/stopwatch/model"
 
 type Base struct {
 	Title  string

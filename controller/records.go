@@ -6,7 +6,7 @@ import (
 	"html/template"
 	"net/http"
 
-	"github.com/pluralsight/webservice/viewmodel"
+	"github.com/quinnlam45/stopwatch/viewmodel"
 )
 
 type records struct {

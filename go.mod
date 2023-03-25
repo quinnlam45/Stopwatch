@@ -1,4 +1,4 @@
-module github.com/pluralsight/webservice
+module github.com/quinnlam45/stopwatch
 
 go 1.16
 

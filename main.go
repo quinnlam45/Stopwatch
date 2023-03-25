@@ -8,8 +8,8 @@ import (
 	"net/http"
 	"os"
 
-	"github.com/pluralsight/webservice/controller"
-	"github.com/pluralsight/webservice/model"
+	"github.com/quinnlam45/stopwatch/controller"
+	"github.com/quinnlam45/stopwatch/model"
 
 	"database/sql"
 

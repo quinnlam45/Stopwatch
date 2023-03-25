@@ -8,8 +8,8 @@ import (
 	"strconv"
 	"time"
 
-	"github.com/pluralsight/webservice/model"
-	"github.com/pluralsight/webservice/viewmodel"
+	"github.com/quinnlam45/stopwatch/model"
+	"github.com/quinnlam45/stopwatch/viewmodel"
 )
 
 type home struct {
