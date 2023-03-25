@@ -1,18 +1,30 @@
 package model
 
 import (
+	"fmt"
 	"testing"
 )
 
 func TestLogin(t *testing.T) {
-	// testUser := "testing_user"
-	// testPassword := "Test_Password_123"
-	// result, err := Login(testUser, testPassword)
-	// expectedUserResult := &User{Username: testUser, Password: "$2a$12$Ol7CXY6VHpkiSLlcOidfGeefAQjCveM/t382Wrf2.WjQL9xbbDMou"}
+	testDB := new(mockDB)
+	db = testDB
 
-	// if err != nil {
-	// 	fmt.Println(err)
-	// } else if expectedUserResult.Password != passwordCompareResult {
-	// 	t.Errorf("Result was incorrect, got: %s, want: %s.", result, expectedHash)
-	// }
+	testDB.setMockDBRow(5, "test_user", "$2a$12$FsC9ySaKvjmWMkmJSyKnr.WQBeyjlnPFWK4BSMrZkeLigE4sNJB6C")
+	userMockRow := testDB.returnedRow
+
+	username := "test_user"
+	test_password := "Password"
+	result, err := Login(username, test_password)
+	if err != nil {
+		fmt.Println(err)
+	}
+
+	if result.UserID != userMockRow.values[0] && result.Username != userMockRow.values[0] {
+		t.Errorf(
+			`Want id: 5 username: test_user,
+				got id: %v username: %v`,
+			result.UserID,
+			result.Username)
+	}
+
 }
