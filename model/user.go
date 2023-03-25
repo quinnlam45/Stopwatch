@@ -68,7 +68,7 @@ func AddUser(username, password string) {
 	if err != nil {
 		fmt.Println(err)
 	} else {
-		_, err := db.Query(`EXEC spAddUser @p1, @p2`, username, pwdHash)
+		_, err := db.Exec(`EXEC spAddUser @p1, @p2`, username, pwdHash)
 		if err != nil {
 			fmt.Println(err)
 		}
