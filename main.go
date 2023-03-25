@@ -32,7 +32,7 @@ func main() {
 	defer db.Close()
 
 	controller.Startup(templates)
-	http.ListenAndServe(":8000", nil) //new(middleware.TimeoutMiddleware)
+	http.ListenAndServe(":8000", nil)
 }
 
 func connectToDatabase() *sql.DB {
