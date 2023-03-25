@@ -9,7 +9,7 @@ func TestLogin(t *testing.T) {
 	testDB := new(mockDB)
 	db = testDB
 
-	testDB.setMockDBRow(5, "test_user", "$2a$12$FsC9ySaKvjmWMkmJSyKnr.WQBeyjlnPFWK4BSMrZkeLigE4sNJB6C")
+	testDB.setMockDBRow(5, "test_user", "somehash")
 	userMockRow := testDB.returnedRow
 
 	username := "test_user"
