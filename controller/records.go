@@ -44,9 +44,6 @@ func filterRecords(w http.ResponseWriter, r *http.Request) {
 }
 
 func getRecords(w http.ResponseWriter, r *http.Request) {
-	//url := r.URL
-	//ord := url.Query().Get("ord")
-
 	records := viewmodel.GetRecords()
 
 	data, err := json.Marshal(records)
